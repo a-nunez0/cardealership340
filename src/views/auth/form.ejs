@@ -1,0 +1,20 @@
+<%- include("../partials/header") %>
+<section class="panel form-panel">
+  <h1><%= title %></h1>
+  <% if (error) { %><p class="error" role="alert"><%= error %></p><% } %>
+  <form action="/<%= mode %>" method="post">
+    <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+    <% if (mode === "register") { %>
+      <label for="name">Name</label>
+      <input id="name" name="name" autocomplete="name" maxlength="80" value="<%= values.name ?? '' %>" required>
+    <% } %>
+    <label for="email">Email</label>
+    <input id="email" type="email" name="email" autocomplete="username" maxlength="254" value="<%= values.email ?? '' %>" required>
+    <label for="password">Password</label>
+    <input id="password" type="password" name="password" autocomplete="<%= mode === 'register' ? 'new-password' : 'current-password' %>" minlength="8" maxlength="72" required>
+    <button class="button"><%= title %></button>
+  </form>
+  <% if (mode === "register") { %><p>Already registered? <a href="/login">Sign in</a></p>
+  <% } else { %><p>New to CSE Motors? <a href="/register">Create an account</a></p><% } %>
+</section>
+<%- include("../partials/footer") %>

@@ -1,0 +1,12 @@
+<%- include("../partials/header") %>
+<section class="hero">
+  <h1>Find your next used vehicle.</h1>
+  <p>Compare prices, mileage, and availability across cars, trucks, SUVs, and vans.</p>
+  <a class="button" href="/vehicles">Browse inventory</a>
+</section>
+<section aria-labelledby="featured-heading">
+  <h2 id="featured-heading">Featured vehicles</h2>
+  <%- include("../partials/categories", { selected: undefined }) %>
+  <%- include("../partials/cards") %>
+</section>
+<%- include("../partials/footer") %>

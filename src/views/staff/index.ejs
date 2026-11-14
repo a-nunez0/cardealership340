@@ -1,0 +1,15 @@
+<%- include("../partials/header") %>
+<h1>Manage inventory</h1>
+<% if (!vehicles.length) { %><p class="empty">There are no listings to manage.</p><% } %>
+<ul class="staff-list">
+  <% for (const vehicle of vehicles) { %>
+    <li class="panel staff-row">
+      <div>
+        <h2><a href="/vehicles/<%= vehicle.id %>"><%= vehicle.year %> <%= vehicle.make %> <%= vehicle.model %></a></h2>
+        <p><%= vehicle.stock_number %> · <%= money.format(vehicle.price) %> · <%= vehicle.availability %></p>
+      </div>
+      <a href="/staff/inventory/<%= vehicle.id %>/edit">Edit vehicle</a>
+    </li>
+  <% } %>
+</ul>
+<%- include("../partials/footer") %>

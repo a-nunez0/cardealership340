@@ -1,0 +1,6 @@
+<nav class="categories" aria-label="Vehicle categories">
+  <a href="/vehicles" <% if (selected === null) { %>aria-current="page"<% } %>>All vehicles</a>
+  <% for (const category of categories) { %>
+    <a href="/vehicles/category/<%= category.slug %>" <% if (selected === category.slug) { %>aria-current="page"<% } %>><%= category.name %></a>
+  <% } %>
+</nav>

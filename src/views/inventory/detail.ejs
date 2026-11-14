@@ -1,0 +1,26 @@
+<%- include("../partials/header") %>
+<a class="back" href="/vehicles">← All vehicles</a>
+<h1><%= title %></h1>
+<div class="detail">
+  <div class="gallery">
+    <% if (!images.length) { %><div class="photo-placeholder">Photo unavailable</div><% } %>
+    <% for (const photo of images) { %>
+      <figure>
+        <img src="<%= photo.url %>" alt="<%= photo.alt_text %>">
+        <% if (photo.credit) { %><figcaption>Illustrative photo · <a href="<%= photo.source_url %>"><%= photo.credit %></a></figcaption><% } %>
+      </figure>
+    <% } %>
+  </div>
+  <section class="panel">
+    <p class="muted"><%= vehicle.category %> · <%= vehicle.availability %></p>
+    <h2><%= money.format(vehicle.price) %></h2>
+    <p class="description"><%= vehicle.description %></p>
+    <dl>
+      <dt>Mileage</dt><dd><%= vehicle.mileage.toLocaleString("en-US") %> mi</dd>
+      <dt>Transmission</dt><dd><%= vehicle.transmission %></dd>
+      <dt>Drivetrain</dt><dd><%= vehicle.drivetrain %></dd>
+      <dt>Stock number</dt><dd><%= vehicle.stock_number %></dd>
+    </dl>
+  </section>
+</div>
+<%- include("../partials/footer") %>

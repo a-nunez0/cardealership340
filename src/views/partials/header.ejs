@@ -1,0 +1,21 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title><%= title %> | CSE Motors</title>
+  <link rel="stylesheet" href="/site.css">
+</head>
+<body>
+  <header class="site-header">
+    <div class="shell navigation">
+      <a class="brand" href="/">CSE <span>Motors</span></a>
+      <nav aria-label="Main navigation">
+        <a href="/vehicles">Inventory</a>
+        <% if (user && user.role !== "customer") { %><a href="/staff/inventory">Manage inventory</a><% } %>
+        <% if (user) { %><a href="/account">My account</a>
+        <% } else { %><a href="/login">Sign in</a><% } %>
+      </nav>
+    </div>
+  </header>
+  <main class="shell">

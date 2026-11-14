@@ -1,0 +1,17 @@
+<% if (!vehicles.length) { %><p class="empty">There are no listings here right now.</p><% } %>
+<div class="vehicle-grid">
+  <% for (const vehicle of vehicles) { %>
+    <article class="vehicle-card">
+      <a class="vehicle-link" href="/vehicles/<%= vehicle.id %>">
+        <% if (vehicle.image_url) { %><img src="<%= vehicle.image_url %>" alt="<%= vehicle.image_alt %>" loading="lazy">
+        <% } else { %><div class="photo-placeholder">Photo unavailable</div><% } %>
+        <div class="vehicle-info">
+          <p class="muted"><%= vehicle.category %> · <%= vehicle.availability %></p>
+          <h3><%= vehicle.year %> <%= vehicle.make %> <%= vehicle.model %></h3>
+          <p><%= vehicle.mileage.toLocaleString("en-US") %> mi</p>
+          <strong><%= money.format(vehicle.price) %></strong>
+        </div>
+      </a>
+    </article>
+  <% } %>
+</div>
