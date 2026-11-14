@@ -52,25 +52,31 @@ try {
   const client = await db.connect();
   try {
     await client.query("BEGIN");
-    for (const item of listings) {
-      await client.query(
-        "INSERT INTO categories (name, slug) VALUES ($1, $2) ON CONFLICT (slug) DO NOTHING",
-        [item.category, item.slug],
-      );
-      const { rows } = await client.query(
-        `INSERT INTO vehicles
-           (category_id, stock_number, year, make, model, mileage, transmission, drivetrain, price, description, featured)
-         SELECT id, $2, 2019, $3, $4, $5, 'Automatic', $6, $7, $8, true
-         FROM categories WHERE slug = $1
-         ON CONFLICT (stock_number) DO NOTHING RETURNING id`,
-        [item.slug, item.stock, item.make, item.model, item.mileage, item.drivetrain, item.price, item.description],
-      );
-      if (rows.length) {
-        const { image, source } = photoLinks(item.photo);
+    const inventorySeed = await client.query(
+      "INSERT INTO seed_history (name) VALUES ($1) ON CONFLICT DO NOTHING RETURNING name",
+      ["sample-inventory"],
+    );
+    if (inventorySeed.rowCount) {
+      for (const item of listings) {
         await client.query(
-          "INSERT INTO vehicle_images (vehicle_id, url, alt_text, credit, source_url) VALUES ($1, $2, $3, $4, $5)",
-          [rows[0].id, image, `2019 ${item.make} ${item.model}`, `${item.author} · CC BY-SA 4.0`, source],
+          "INSERT INTO categories (name, slug) VALUES ($1, $2) ON CONFLICT (slug) DO NOTHING",
+          [item.category, item.slug],
         );
+        const { rows } = await client.query(
+          `INSERT INTO vehicles
+             (category_id, stock_number, year, make, model, mileage, transmission, drivetrain, price, description, featured)
+           SELECT id, $2, 2019, $3, $4, $5, 'Automatic', $6, $7, $8, true
+           FROM categories WHERE slug = $1
+           ON CONFLICT (stock_number) DO NOTHING RETURNING id`,
+          [item.slug, item.stock, item.make, item.model, item.mileage, item.drivetrain, item.price, item.description],
+        );
+        if (rows.length) {
+          const { image, source } = photoLinks(item.photo);
+          await client.query(
+            "INSERT INTO vehicle_images (vehicle_id, url, alt_text, credit, source_url) VALUES ($1, $2, $3, $4, $5)",
+            [rows[0].id, image, `2019 ${item.make} ${item.model}`, `${item.author} · CC BY-SA 4.0`, source],
+          );
+        }
       }
     }
     if (passwordHash) {

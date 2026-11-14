@@ -16,6 +16,21 @@ and availability. Staff can maintain listing details from a protected inventory 
    With `DEMO_PASSWORD` set, this also creates demo accounts whose emails are unused.
 6. Run `npm run dev` and open [localhost:3000](http://localhost:3000).
 
+## Deploy on Render
+
+1. In the Render dashboard, create a Postgres database in the same region and
+   workspace as your existing web service. Copy its **Internal Database URL**.
+2. In the web service's **Environment** tab, add `DATABASE_URL` with that URL,
+   `NODE_ENV` with the value `production`, and `SESSION_SECRET` with a generated
+   secret (at least 32 bytes). Set `DEMO_PASSWORD` to the test password specified
+   in the assignment to enable demo accounts.
+3. In the web service's **Settings**, set **Build Command** to `npm ci` and
+   **Start Command** to `npm run start:render`. Deploy the latest commit.
+4. Open the service's public URL and check the featured listings and demo logins.
+
+The Render start command creates the tables and adds the sample inventory once.
+It also creates missing demo accounts whenever a demo password is configured.
+
 ## Roles and demo accounts
 
 | Role | Demo email | Permissions |

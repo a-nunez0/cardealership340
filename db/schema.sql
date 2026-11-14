@@ -54,4 +54,9 @@ CREATE TABLE IF NOT EXISTS user_sessions (
 
 CREATE INDEX IF NOT EXISTS user_sessions_expire_idx ON user_sessions(expire);
 
+CREATE TABLE IF NOT EXISTS seed_history (
+  name text PRIMARY KEY,
+  applied_at timestamptz NOT NULL DEFAULT now()
+);
+
 COMMIT;

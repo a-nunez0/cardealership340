@@ -7,7 +7,8 @@
     "start": "node server.js",
     "dev": "node --watch server.js",
     "db:setup": "node scripts/setup-db.js",
-    "db:seed": "node scripts/seed-db.js"
+    "db:seed": "node scripts/seed-db.js",
+    "start:render": "npm run db:setup && npm run db:seed && npm start"
   },
   "repository": {
     "type": "git",
