@@ -59,4 +59,15 @@ CREATE TABLE IF NOT EXISTS seed_history (
   applied_at timestamptz NOT NULL DEFAULT now()
 );
 
+CREATE TABLE IF NOT EXISTS inquiries (
+  id integer GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+  kind varchar(12) NOT NULL CHECK (kind IN ('contact', 'service')),
+  name varchar(80) NOT NULL,
+  email varchar(254) NOT NULL,
+  phone varchar(30),
+  vehicle varchar(120),
+  message varchar(2000) NOT NULL,
+  created_at timestamptz NOT NULL DEFAULT now()
+);
+
 COMMIT;
