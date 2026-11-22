@@ -1,5 +1,17 @@
 <%- include("../partials/header") %>
 <h1>Manage inventory</h1>
+<% if (user.role === "owner") { %>
+  <p><a class="button" href="/staff/inventory/new">Add vehicle</a></p>
+  <details class="panel" style="margin: 1rem 0">
+    <summary>Add category</summary>
+    <form method="post" action="/staff/categories">
+      <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+      <label for="category-name">Category name</label>
+      <input id="category-name" name="name" maxlength="50" required placeholder="SUV">
+      <button class="button">Save category</button>
+    </form>
+  </details>
+<% } %>
 <% if (!vehicles.length) { %><p class="empty">There are no listings to manage.</p><% } %>
 <ul class="staff-list">
   <% for (const vehicle of vehicles) { %>
