@@ -12,6 +12,8 @@
       <a class="brand" href="/">CSE <span>Motors</span></a>
       <nav aria-label="Main navigation">
         <a href="/vehicles">Inventory</a>
+        <a href="/contact">Contact</a>
+        <a href="/service">Service</a>
         <% if (user && user.role !== "customer") { %><a href="/staff/inventory">Manage inventory</a><% } %>
         <% if (user) { %><a href="/account">My account</a>
         <% } else { %><a href="/login">Sign in</a><% } %>
