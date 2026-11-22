@@ -5,6 +5,7 @@ import rateLimit from "express-rate-limit";
 import session from "express-session";
 import { accountRoutes } from "./controllers/accounts.js";
 import { inventoryRoutes } from "./controllers/inventory.js";
+import { inquiryRoutes } from "./controllers/inquiries.js";
 import { formToken, HttpError, loadUser, requireRole, requireUser, verifyFormToken } from "./middleware/security.js";
 
 export default function createApp({ db, secret, production = false }) {
@@ -15,6 +16,7 @@ export default function createApp({ db, secret, production = false }) {
   const PgStore = connectPgSimple(session);
   const accounts = accountRoutes(db, cookieName);
   const inventory = inventoryRoutes(db);
+  const inquiries = inquiryRoutes(db);
   const staff = requireRole("owner", "employee");
   const authLimit = rateLimit({
     windowMs: 15 * 60 * 1000,
@@ -53,6 +55,11 @@ export default function createApp({ db, secret, production = false }) {
   app.get("/vehicles", inventory.browse);
   app.get("/vehicles/category/:category", inventory.browse);
   app.get("/vehicles/:id", inventory.detail);
+
+  app.get("/contact", formToken, inquiries.contact);
+  app.post("/contact", verifyFormToken, formToken, inquiries.submit);
+  app.get("/service", formToken, inquiries.service);
+  app.post("/service", verifyFormToken, formToken, inquiries.submit);
 
   app.get("/login", formToken, accounts.loginPage);
   app.post("/login", authLimit, verifyFormToken, formToken, accounts.login);
