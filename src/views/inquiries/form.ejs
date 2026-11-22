@@ -1,0 +1,28 @@
+<%- include("../partials/header") %>
+<section class="panel form-panel">
+  <h1><%= heading %></h1>
+  <p class="muted"><%= description %></p>
+  <% if (success) { %>
+    <p role="status">Thank you! Your request has been received.</p>
+    <a class="button" href="/">Back to home</a>
+  <% } else { %>
+    <% if (error) { %><p class="error" role="alert"><%= error %></p><% } %>
+    <form method="post" action="/<%= kind %>">
+      <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+      <label for="name">Your name</label>
+      <input id="name" name="name" maxlength="80" required autocomplete="name" value="<%= values.name || '' %>">
+      <label for="email">Email</label>
+      <input id="email" type="email" name="email" maxlength="254" required autocomplete="email" value="<%= values.email || '' %>">
+      <label for="phone">Phone (optional)</label>
+      <input id="phone" type="tel" name="phone" maxlength="30" autocomplete="tel" value="<%= values.phone || '' %>">
+      <% if (kind === "service") { %>
+        <label for="vehicle">Vehicle (year, make, and model)</label>
+        <input id="vehicle" name="vehicle" maxlength="120" required value="<%= values.vehicle || '' %>">
+      <% } %>
+      <label for="message"><%= kind === "service" ? "Describe the service needed" : "Message" %></label>
+      <textarea id="message" name="message" rows="6" maxlength="2000" required><%= values.message || '' %></textarea>
+      <button class="button" type="submit"><%= button %></button>
+    </form>
+  <% } %>
+</section>
+<%- include("../partials/footer") %>
