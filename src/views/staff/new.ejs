@@ -1,0 +1,28 @@
+<%- include("../partials/header") %>
+<a class="back" href="/staff/inventory">← Manage inventory</a>
+<section class="panel form-panel">
+  <h1>Add vehicle</h1>
+  <% if (error) { %><p class="error" role="alert"><%= error %></p><% } %>
+  <form method="post" action="/staff/inventory/new">
+    <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+    <label for="category_id">Category</label>
+    <select id="category_id" name="category_id" required>
+      <option value="">Select category</option>
+      <% for (const c of categories) { %><option value="<%= c.id %>" <%= String(values.category_id || '') === String(c.id) ? 'selected' : '' %>><%= c.name %></option><% } %>
+    </select>
+    <% for (const item of [
+      ["stock_number","Stock number","text",20], ["year","Year","number",4],
+      ["make","Make","text",60], ["model","Model","text",60],
+      ["mileage","Mileage","number",10], ["transmission","Transmission","text",30],
+      ["drivetrain","Drivetrain","text",20], ["price","Price (USD)","number",12]
+    ]) { %>
+      <label for="<%= item[0] %>"><%= item[1] %></label>
+      <input id="<%= item[0] %>" name="<%= item[0] %>" type="<%= item[2] %>" maxlength="<%= item[3] %>" <%= item[0] === "price" ? 'step="0.01" min="0.01"' : '' %> <%= item[0] === "year" ? 'min="1886" max="2100"' : '' %> <%= item[0] === "mileage" ? 'min="0"' : '' %> value="<%= values[item[0]] || '' %>" required>
+    <% } %>
+    <label for="description">Description</label>
+    <textarea id="description" name="description" maxlength="2000" rows="5" required><%= values.description || '' %></textarea>
+    <label><input type="checkbox" name="featured" style="width:auto" <%= values.featured ? 'checked' : '' %>> Feature on homepage</label>
+    <button class="button">Add vehicle</button>
+  </form>
+</section>
+<%- include("../partials/footer") %>
