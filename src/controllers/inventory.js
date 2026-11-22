@@ -35,6 +35,41 @@ export function inventoryRoutes(db) {
       const images = await inventory.vehicleImages(db, vehicle.id);
       res.render("inventory/detail", { title: `${vehicle.year} ${vehicle.make} ${vehicle.model}`, vehicle, images });
     },
+    async newPage(_req, res) {
+      const categories = await inventory.staffCategories(db);
+      res.render("staff/new", { title: "Add vehicle", categories, values: {}, error: null });
+    },
+    async create(req, res) {
+      const keys = ["category_id", "stock_number", "year", "make", "model", "mileage", "transmission", "drivetrain", "price", "description"];
+      const v = Object.fromEntries(keys.map(k => [k, field(req.body, k)]));
+      v.featured = req.body.featured === "on";
+      const categories = await inventory.staffCategories(db);
+      const valid = categories.some(c => String(c.id) === v.category_id)
+        && /^[A-Za-z0-9-]{1,20}$/.test(v.stock_number)
+        && /^\\d{4}$/.test(v.year) && Number(v.year) >= 1886 && Number(v.year) <= 2100
+        && v.make.length > 0 && v.make.length <= 60 && v.model.length > 0 && v.model.length <= 60
+        && /^\\d{1,9}$/.test(v.mileage) && Number(v.mileage) <= 2147483647
+        && v.transmission.length > 0 && v.transmission.length <= 30
+        && v.drivetrain.length > 0 && v.drivetrain.length <= 20
+        && /^\\d{1,8}(\\.\\d{1,2})?$/.test(v.price) && Number(v.price) > 0
+        && v.description.length > 0 && v.description.length <= 2000;
+      if (!valid) return res.status(422).render("staff/new", { title: "Add vehicle", categories, values: v, error: "Please check all fields and try again." });
+      try {
+        await inventory.createVehicle(db, v);
+      } catch (error) {
+        if (error.code === "23505") return res.status(422).render("staff/new", { title: "Add vehicle", categories, values: v, error: "That stock number is already in use." });
+        throw error;
+      }
+      res.redirect(303, "/staff/inventory");
+    },
+    async addCategory(req, res) {
+      const name = field(req.body, "name");
+      const slug = name.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+      if (!name || name.length > 50 || !slug || slug.length > 50) throw new HttpError(422, "Enter a valid category name (up to 50 characters).");
+      const result = await inventory.createCategory(db, name, slug);
+      if (!result) throw new HttpError(409, "That category already exists.");
+      res.redirect(303, "/staff/inventory");
+    },
     async staff(_req, res) {
       const vehicles = await inventory.browse(db);
       res.render("staff/index", { title: "Manage inventory", vehicles });
