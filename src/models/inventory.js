@@ -53,3 +53,21 @@ export async function deleteVehicle(db, id) {
   const { rowCount } = await db.query("DELETE FROM vehicles WHERE id = $1", [id]);
   return rowCount === 1;
 }
+
+export async function staffCategories(db) {
+  const { rows } = await db.query("SELECT id, name, slug FROM categories ORDER BY name");
+  return rows;
+}
+
+export async function createCategory(db, name, slug) {
+  const { rows } = await db.query("INSERT INTO categories (name, slug) VALUES ($1, $2) ON CONFLICT DO NOTHING RETURNING id", [name, slug]);
+  return rows[0] ?? null;
+}
+
+export async function createVehicle(db, v) {
+  const { rows } = await db.query(
+    "INSERT INTO vehicles (category_id, stock_number, year, make, model, mileage, transmission, drivetrain, price, description, availability, featured) VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,'available',$11) RETURNING id",
+    [v.category_id, v.stock_number, v.year, v.make, v.model, v.mileage, v.transmission, v.drivetrain, v.price, v.description, v.featured]
+  );
+  return rows[0].id;
+}
