@@ -69,6 +69,9 @@ export default function createApp({ db, secret, production = false }) {
   app.post("/logout", requireUser, verifyFormToken, accounts.logout);
 
   app.get("/staff/inventory", requireUser, staff, formToken, inventory.staff);
+  app.get("/staff/inventory/new", requireUser, requireRole("owner"), formToken, inventory.newPage);
+  app.post("/staff/inventory/new", requireUser, requireRole("owner"), verifyFormToken, formToken, inventory.create);
+  app.post("/staff/categories", requireUser, requireRole("owner"), verifyFormToken, inventory.addCategory);
   app.get("/staff/inventory/:id/edit", requireUser, staff, formToken, inventory.edit);
   app.post("/staff/inventory/:id/edit", requireUser, staff, verifyFormToken, formToken, inventory.update);
   app.post("/staff/inventory/:id/delete", requireUser, requireRole("owner"), verifyFormToken, inventory.remove);
